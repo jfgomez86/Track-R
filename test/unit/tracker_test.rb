@@ -30,9 +30,9 @@ class TestTrackerTest < Test::Unit::TestCase
   context "with a valid token" do
 
     setup do
-      @project_id = "10490"
+      @project_id = "XXXXX"
       def get_token
-        token_options = {:username => "jose.gomez@koombea.com", :password => "62270767"}
+        token_options = {:username => "XXXXXXXXXXXXXXXXXXXXXX", :password => "XXXXXXXX"}
         Tracker::Token.new(token_options)
       end
     end
