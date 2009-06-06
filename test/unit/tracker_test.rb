@@ -7,7 +7,7 @@ class TestTrackerTest < Test::Unit::TestCase
 
     setup do
       def token_options
-        {:username => "jose.gomez@koombea.com", :password => "62270767"}
+        {:username => "XXXXXXXXXXXXXXXXXXXXXX", :password => "XXXXXXXX"}
       end
     end
 
