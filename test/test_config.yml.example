@@ -1,0 +1,25 @@
+--- 
+:password: "password"
+:username: an@email.com
+:token:    "a_token_hash"
+:project_count: 2
+:project_1: 
+  :name: AProjectName
+  :id: "12345"
+  :point_scale:
+  - "0"
+  - "1"
+  - "2"
+  - "3"
+  :week_start_day: Monday
+  :iteration_length: "1"
+:project_2: 
+  :name: AnotherProjectName
+  :id: "6890"
+  :point_scale:
+  - "0"
+  - "1"
+  - "2"
+  - "3"
+  :week_start_day: Sunday
+  :iteration_length: "1"

@@ -9,27 +9,62 @@ module Tracker
       raise TypeError unless @token.is_a? Token
     end
 
-    def project(id)
-      @project = Project.new(id, @token)
+    def project(project_id)
+      @project = Project.new(:project_id => project_id , :token => @token)
     end
+
+    # Fills @projects. NOTE: call sync method to refill/sync @projects
+    def projects
+      @projects || get_projects
+    end
+
+    def sync
+      get_projects
+    end
+
+    # Receives a block with the condition to find a project. Should work the
+    # same as Enumerable.find method
+    def find_project
+      projects if @projects.nil?
+      @projects.find do |project|
+        yield(project)
+      end
+    end
+
+    protected
+
+    def get_projects
+      api_url = "http://www.pivotaltracker.com/services/v2/projects/"
+      @projects = (Hpricot(open(api_url, {"X-TrackerToken" => @token.to_s}))/:project).map {|project| Project.new(:project => project)}
+    end
+
   end # class Tracker::Tracker
 
   class Project
     attr_reader :name, :iteration_length, :id, :week_start_day, :point_scale, :api_url, :url, :token
-    def initialize(id, token)
-      @id = id
-      @token = token.to_s
-      @api_url = "http://www.pivotaltracker.com/services/v2/projects/#{@id}"
-      @url = "http://www.pivotaltracker.com/projects/#{@id}"
-      @project = Hpricot(open(@api_url, {"X-TrackerToken" => @token}))
-      setup_project
+    def initialize(options = {})
+      if options.include?(:project_id) && options.include?(:token)
+        @id      = options[:project_id]
+        @token   = options[:token].to_s
+        @api_url = "http://www.pivotaltracker.com/services/v2/projects/#{@id}"
+        @url     = "http://www.pivotaltracker.com/projects/#{@id}"
+        @project = Hpricot(open(@api_url, {"X-TrackerToken" => token}))
+      elsif options.include?(:project)
+        @project = options[:project]
+      else
+        raise ArgumentError, "Valid options are: :project (receives an Hpricot Object) OR :project_id + :token"
+      end
+      build_project
     end
 
-    def build_project(@project)
-      @name = @project.at('name').inner_html
+    def build_project
+      @id               ||= @project.at('id').inner_html
+      @api_url          ||= "http://www.pivotaltracker.com/services/v2/projects/#{@id}"
+      @url              ||= "http://www.pivotaltracker.com/projects/#{@id}"
+      @name             = @project.at('name').inner_html
       @iteration_length = @project.at('iteration_length').inner_html
-      @week_start_day = @project.at('week_start_day').inner_html
-      @point_scale = @project.at('point_scale').inner_html.split(',')
+      @week_start_day   = @project.at('week_start_day').inner_html
+      @point_scale      = @project.at('point_scale').inner_html.split(',')
     end
 
   end # class Tracker::Project
