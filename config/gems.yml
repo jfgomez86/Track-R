@@ -1,0 +1,5 @@
+---
+- :name: hpricot
+- :name: thoughtbot-shoulda
+  :source: http://gems.github.com
+
