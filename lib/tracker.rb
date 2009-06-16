@@ -4,6 +4,8 @@ require 'tracker/project'
 require 'tracker/story'
 require 'tracker/token'
 require 'tracker/tracker'
+require 'cgi'
+require 'net/http'
 
 # Load configuration globals
 CONFIG = YAML.load_file(File.join(File.dirname(__FILE__), '/../config/config.yml'))

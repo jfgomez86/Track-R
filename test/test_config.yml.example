@@ -23,3 +23,6 @@
   - "3"
   :week_start_day: Sunday
   :iteration_length: "1"
+:story_1:
+  :id: 12345
+  :name: "Some existing name"

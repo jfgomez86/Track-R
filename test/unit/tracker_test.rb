@@ -22,7 +22,7 @@ class TestTrackerTest < Test::Unit::TestCase
       @tracker = Tracker.new(get_token)
     end
 
-    should "return a valid project with correct attributes" do 
+    should "return a valid project by passing the id with correct attributes" do 
       project = @tracker.project(@project_id)
       assert_equal $config[:project_1][:name], project.name
       assert_equal $config[:project_1][:point_scale], project.point_scale
