@@ -1,6 +1,8 @@
 $:.unshift File.dirname(__FILE__)
 $:.unshift File.join(File.dirname(__FILE__), '/vendor/')
 require 'rubygems'
+require 'rake/gempackagetask'
+
 begin
   require 'rake'
   require 'rake/testtask'
@@ -32,5 +34,30 @@ namespace :gems do
     end
     require 'install-gems/install-gems.rb'
     InstallGems.new(File.join(File.dirname(__FILE__),'/config/gems.yml'))
+  end
+end
+
+spec = Gem::Specification.new do |s|
+    s.platform     = Gem::Platform::RUBY
+    s.name         = "track-r"
+    s.description  = "track-r is a library that provides wrapper classes and methods for accessing PivotalTracker's public API."
+    s.homepage     = "http://github.com/jfgomez86/Track-R"
+    s.version      = "1.0.0"
+    s.author       = "Jose Felix Gomez"
+    s.email        = "moc.liamg@68zemogfj".reverse
+    s.summary      = "A wrapper library for pivotal tracker's API"
+    s.files        = Dir.glob('{config,lib}/**/*.{rb,yml}')
+    s.require_path = "lib"
+    s.test_files   = Dir.glob('test/**/*.rb') << "test/test_config.yml.example"
+    s.has_rdoc     = true
+end
+
+Rake::GemPackageTask.new(spec) do |pkg|
+    pkg.need_tar = true
+end
+
+namespace :gem do
+  task :build => "pkg/#{spec.name}-#{spec.version}.gem" do
+    puts "generated latest version"
   end
 end

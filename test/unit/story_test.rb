@@ -1,5 +1,4 @@
 require File.dirname(__FILE__) + '/../test_helper'
-require File.dirname(__FILE__) + '/../../lib/tracker'
 
 class TestStoryTest < Test::Unit::TestCase
 
