@@ -7,7 +7,7 @@ h2. Installation
 
 <pre><code>
   $ gem sources -a http://gems.github.com (you only have to do this once)
-  $ sudo gem install track-r
+  $ sudo gem install jfgomez86-track-r
 </code></pre>
 
 h2. Usage
