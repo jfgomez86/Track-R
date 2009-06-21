@@ -1,0 +1,93 @@
+h1. What is Track-R?
+
+Track-R is a library that intends to extend PivotalTracker's API to a higher
+level using Ruby.
+
+h2. Installation
+
+<pre><code>
+  $ gem sources -a http://gems.github.com (you only have to do this once)
+  $ sudo gem install track-r
+</code></pre>
+
+h2. Usage
+
+To use Track-R you first need to have a valid account on
+"PivotalTracker":http://www.pivotaltracker.com.  You also need to have an api
+token. To generate a token, use the "Create New Token" link on the My Profile
+page.
+
+If you don't want to generate a token, you can also use Track-R's token
+wrapper:
+
+<pre><code>
+  token = Token.new(:username => my_username, :password => my_password)
+</code></pre>
+
+And use this object to pass it to all the following methods.
+
+The next step is to require the library itself:
+
+<pre><code>
+  require 'track-r'
+</code></pre>
+
+Lastly you can fetch your project by creating a new Project instance:
+
+<pre><code>
+  my_project = Project.new(:project_id => my_project_id, :token => token)
+</code></pre>
+
+Want to see it's stories? Then running this:
+
+<pre><code>
+  my_project.stories
+</code></pre>
+
+Will do the job. But you probably want to fetch the backlog stories:
+
+<pre><code>
+  my_project.backlog
+</code></pre>
+
+There you go.
+
+Want to create a new story on that project? You have two choices:
+
+<pre><code>
+  my_project.create_story(:story_type => value, :estimate => value, :current_state => value, :description => value, :name => value, :requested_by => value, :owned_by => value, :created_at => value, :accepted_at => value, :labels)
+</code></pre>
+
+Note that most arguments are optional, but please at least specify a name
+and a description.
+
+Want to modify the story? Try this:
+
+<pre><code>
+  story = my_project.story(my_story_id)
+  story.name = "A new cool name"
+  story.story_type = "Bug"
+  story.description = "This is really cool"
+  story.save
+</code></pre>
+
+Don't like that story anymore? Delete it:
+
+<pre><code>
+  story.destroy
+</code></pre>
+
+Or
+
+<pre><code>
+  my_project.delete_story(story)
+</code></pre>
+
+Or
+
+<pre><code>
+  my_project.delete_story(story.id)
+</code></pre>
+
+I think this should get you started. Find any bugs? Please use github's Issue
+tracker.

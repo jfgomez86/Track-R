@@ -21,18 +21,6 @@ class Project
     build_project
   end
 
-  # Builds a project given an hpricot object stored at instance variable
-  # @project
-  def build_project
-    @id               ||= @project.at('id').inner_html
-    @api_url          ||= "http://www.pivotaltracker.com/services/v2/projects/#{@id}"
-    @url              ||= "http://www.pivotaltracker.com/projects/#{@id}"
-    @name             = @project.at('name').inner_html
-    @iteration_length = @project.at('iteration_length').inner_html
-    @week_start_day   = @project.at('week_start_day').inner_html
-    @point_scale      = @project.at('point_scale').inner_html.split(',')
-  end
-
   # Builds an array containing the project's story
   def stories ; @stories || get_stories ; end
 
@@ -82,6 +70,18 @@ class Project
   end
 
   protected
+
+  # Builds a project given an hpricot object stored at instance variable
+  # @project
+  def build_project
+    @id               ||= @project.at('id').inner_html
+    @api_url          ||= "http://www.pivotaltracker.com/services/v2/projects/#{@id}"
+    @url              ||= "http://www.pivotaltracker.com/projects/#{@id}"
+    @name             = @project.at('name').inner_html
+    @iteration_length = @project.at('iteration_length').inner_html
+    @week_start_day   = @project.at('week_start_day').inner_html
+    @point_scale      = @project.at('point_scale').inner_html.split(',')
+  end
 
   # Builds an array containing the project's stories
   def get_stories

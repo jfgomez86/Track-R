@@ -14,7 +14,7 @@ class Story
       @url        = "http://www.pivotaltracker.com/story/show/#{@id}"
       @api_url    = "http://www.pivotaltracker.com/services/v2/projects/#{@project_id}/stories/#{@id}"
       @story      = Hpricot(open(@api_url, {"X-TrackerToken" => @token}))
-    elsif options.include?(:story) && options.include?(:project_id)
+    elsif options.include?(:story) && options.include?(:project_id) && options.include?(:token)
       @project_id = options[:project_id]
       @story      = options[:story]
     else
@@ -48,6 +48,14 @@ class Story
 
     @story = (Hpricot(response.body)/:story)
     build_story
+  end
+
+  # TODO: test this method:
+  def destroy
+    api_url = URI.parse("http://www.pivotaltracker.com/services/v2/projects/#{@project_id}/stories/#{@id}")
+    response = Net::HTTP.start(api_url.host, api_url.port) do |http|
+      http.delete(api_url.path, {"X-TrackerToken" => @token})
+    end
   end
 
   protected
