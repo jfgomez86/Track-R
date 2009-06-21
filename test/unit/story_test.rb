@@ -3,14 +3,31 @@ require File.dirname(__FILE__) + '/../../lib/tracker'
 
 class TestStoryTest < Test::Unit::TestCase
 
-  context "A story" do 
+  context "A given story" do 
 
-    should "be" do 
-      # TODO: make pending tests and features
-      true
+    setup do 
+      token_options = {:username => $config[:username], :password => $config[:password]}
+      @tracker = Tracker.new(Token.new(token_options))
+      @project_id = $config[:project_1][:id]
+      @project = @tracker.project(@project_id)
+      attributes = { :name => "Finish Track-R (sorry for cluttering :))",
+                    :requested_by => "Jose Felix Gomez", 
+                    :description => "This story was made with Track-R library. Sorry for the clutter, you're free to delete me." }
+      @story = @project.create_story(attributes)
+    end
+
+    teardown do
+      @project.delete_story(@story)
+    end
+
+    should "be updated after story.save call" do 
+      @story.name = "More power to the shields"
+      @story.description = "ZOMG!"
+      @story.save
+
+      assert_equal "More power to the shields", @project.story(@story.id).name
     end
 
   end
-
 end
 

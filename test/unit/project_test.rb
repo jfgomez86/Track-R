@@ -11,7 +11,7 @@ class ProjectTest < Test::Unit::TestCase
     end
 
     should "show all stories for that project with @project.stories" do
-      assert_equal 14, @project.stories.size
+      assert_equal $config[:project_1][:story_count], @project.stories.size
     end
 
     should "show a story with @project.story and passing the story id as argument" do 
@@ -27,6 +27,16 @@ class ProjectTest < Test::Unit::TestCase
       assert_equal  "Finish Track-R (sorry for cluttering :))", new_story.name
       @project.delete_story(new_story)
       assert_equal story_count, @project.stories.size
+    end
+
+    should "be able to get the backlog stories" do 
+      story_count = $config[:project_1][:backlog_stories]
+      assert_equal story_count, @project.backlog.size
+    end
+
+    should "be able to get the current iteration stories" do 
+      story_count = $config[:project_1][:current_stories]
+      assert_equal story_count, @project.current.size
     end
 
   end

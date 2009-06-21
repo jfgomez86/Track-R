@@ -3,7 +3,7 @@
 # project_id and a token with which to fetch and build the project object
 class Project
   attr_reader :name, :iteration_length, :id, :week_start_day, :point_scale,
-    :api_url, :url, :token, :stories
+    :api_url, :url, :token
 
   def initialize(options = {})
     if options.include?(:project_id) && options.include?(:token)
@@ -12,6 +12,7 @@ class Project
       @api_url = "http://www.pivotaltracker.com/services/v2/projects/#{@id}"
       @url     = "http://www.pivotaltracker.com/projects/#{@id}"
       @project = Hpricot(open(@api_url, {"X-TrackerToken" => token}))
+      @stories = nil
     elsif options.include?(:project)
       @project = options[:project]
     else
@@ -33,8 +34,9 @@ class Project
   end
 
   # Builds an array containing the project's story
-  def stories ; get_stories ; end
+  def stories ; @stories || get_stories ; end
 
+  # Fetches a story with given id
   def story(id)
     Story.new(:story_id => id, :project_id => @id, :token => @token)
   end
@@ -50,7 +52,7 @@ class Project
     end
 
     story = (Hpricot(response.body)/:story)
-    Story.new(:story => story, :project_id => @id)
+    Story.new(:story => story, :project_id => @id, :token => @token)
   end
 
   # Deletes a story given a Story object or a story_id
@@ -63,18 +65,34 @@ class Project
       raise ArgumentError, "Should receive a story id or a Story object."
     end
     response = Net::HTTP.start(api_url.host, api_url.port) do |http|
-      http.delete(api_url.path, {"X-TrackerToken" => token})
+      http.delete(api_url.path, {"X-TrackerToken" => @token})
     end
     story = (Hpricot(response.body)/:story)
-    Story.new(:story => story, :project_id => @id)
+    Story.new(:story => story, :project_id => @id, :token => @token)
+  end
+
+  # Gets the backlog's stories
+  def backlog
+    get_stories_by_iteration("backlog")
+  end
+
+  # Gets the current iteration's stories
+  def current
+    get_stories_by_iteration("current")
   end
 
   protected
 
-  # Builds an array containing the project's story
+  # Builds an array containing the project's stories
   def get_stories
     api_url = "#{CONFIG[:api_location]}/projects/#{@id}/stories"
-    @stories ||= (Hpricot(open(api_url, {"X-TrackerToken" => @token.to_s}))/:story).map {|story| Story.new(:story => story, :project_id => @id)}
+    @stories = (Hpricot(open(api_url, {"X-TrackerToken" => @token.to_s}))/:story).map {|story| Story.new(:story => story, :project_id => @id, :token => @token)}
+  end
+
+  # Builds an array containing the project's stories for a given iteration
+  def get_stories_by_iteration(name)
+    api_url = "http://www.pivotaltracker.com/services/v2/projects/#{@id}/iterations/#{name}"
+    @stories = (Hpricot(open(api_url, {"X-TrackerToken" => @token.to_s}))/:story).map {|story| Story.new(:story => story, :project_id => @id, :token => @token)}
   end
 
 end # class Tracker::Project
