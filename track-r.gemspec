@@ -9,11 +9,11 @@ Gem::Specification.new do |s|
   s.date                      = %q{2009-06-21}
   s.description               = "track-r is a library that provides wrapper classes and methods for accessing PivotalTracker's public API."
   s.email                     = "moc.liamg@68zemogfj".reverse
-  s.files                     = Dir.glob('{config,lib}/**/*.{rb,yml}')
+  s.files                     = ["config/environment.rb", "config/gems.yml", "config/config.yml", "lib/track-r.rb", "lib/track-r/token.rb", "lib/track-r/project.rb", "lib/track-r/story.rb", "lib/track-r/tracker.rb"]
   s.has_rdoc                  = false
   s.homepage                  = "http://github.com/jfgomez86/Track-R"
   s.require_paths             = ["lib"]
-  s.rubygems_version          = %q{1.3.0}
+  s.rubygems_version          = %q{1.3.3}
   s.summary                   = "A wrapper library for pivotal tracker's API"
 
   if s.respond_to? :specification_version then
