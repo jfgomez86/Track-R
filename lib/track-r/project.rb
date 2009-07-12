@@ -11,10 +11,11 @@ class Project
       @token   = options[:token].to_s
       @api_url = "http://www.pivotaltracker.com/services/v2/projects/#{@id}"
       @url     = "http://www.pivotaltracker.com/projects/#{@id}"
-      @project = Hpricot(open(@api_url, {"X-TrackerToken" => token}))
+      @project = Hpricot(open(@api_url, {"X-TrackerToken" => @token}))
       @stories = nil
-    elsif options.include?(:project)
+    elsif options.include?(:project) && options.include?(:token)
       @project = options[:project]
+      @token   = options[:token].to_s
     else
       raise ArgumentError, "Valid options are: :project (receives an Hpricot Object) OR :project_id + :token"
     end

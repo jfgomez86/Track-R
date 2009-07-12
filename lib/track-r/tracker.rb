@@ -44,7 +44,7 @@ class Tracker
   # Returns an Array stored in @projects
   def get_projects
     api_url = "#{CONFIG[:api_location]}/projects/"
-    @projects ||= (Hpricot(open(api_url, {"X-TrackerToken" => @token.to_s}))/:project).map {|project| Project.new(:project => project)}
+    @projects ||= (Hpricot(open(api_url, {"X-TrackerToken" => @token.to_s}))/:project).map {|project| Project.new(:project => project, :token => @token)}
   end
 
 end # class Tracker::Tracker
