@@ -39,6 +39,20 @@ class Story
     @labels        = @story.at('labels').inner_html        unless @story.at('labels').nil?
   end
 
+  def update(attrs = {})
+    unless attrs.empty?
+      if validate_attributes(attrs)
+        attrs.each do |attribute, value|
+          virt_attr = "#{attribute}="
+          self.send(virt_attr, value)
+        end
+        return save
+      else
+        raise ArgumentError
+      end
+    end
+  end
+
   def save
     parameters = build_story_xml
     api_url = URI.parse("http://www.pivotaltracker.com/services/v2/projects/#{@project_id}/stories/#{@id}")
@@ -70,6 +84,14 @@ class Story
       story_xml << "<#{key}>#{(value.to_s)}</#{key}>" unless value.nil?
     end
     story_xml << "</story>"
+  end
+
+  def validate_attributes(attrs)
+    valid_attributes = attributes
+    attrs.each_key do |k|
+      return false unless valid_attributes.include? k
+    end
+    return true
   end
 
   def attributes
