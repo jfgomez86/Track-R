@@ -70,6 +70,16 @@ class Project
     get_stories_by_iteration("current")
   end
 
+  # Gets the icebox iteration's stories
+  def icebox
+    get_stories_by_iteration("icebox")
+  end
+
+  # Gets the done iteration's stories
+  def done
+    get_stories_by_iteration("done")
+  end
+
   protected
 
   # Builds a project given an hpricot object stored at instance variable
