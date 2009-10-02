@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{track-r}
-  s.version = "1.4.0"
+  s.version = "1.5.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Jose Felix Gomez"]
-  s.date = %q{2009-10-01}
+  s.date = %q{2009-10-02}
   s.description = %q{track-r is a library that provides wrapper classes and methods for accessing PivotalTracker's public API.}
   s.email = %q{jfgomez86@gmail.com}
   s.extra_rdoc_files = [
