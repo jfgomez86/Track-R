@@ -102,7 +102,12 @@ class Project
 
   # Builds an array containing the project's stories for a given iteration
   def get_stories_by_iteration(name)
-    api_url = "http://www.pivotaltracker.com/services/v2/projects/#{@id}/iterations/#{name}"
+    case name
+    when "icebox"
+      api_url = "http://www.pivotaltracker.com/services/v2/projects/#{@id}/stories?filter=current_state%3Aunscheduled"
+    else
+      api_url = "http://www.pivotaltracker.com/services/v2/projects/#{@id}/iterations/#{name}"
+    end
     @stories = (Hpricot(open(api_url, {"X-TrackerToken" => @token.to_s}))/:story).map {|story| Story.new(:story => story, :project_id => @id, :token => @token)}
   end
 
