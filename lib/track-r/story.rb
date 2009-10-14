@@ -2,7 +2,7 @@
 class Story
   attr_accessor :story_type, :estimate, :current_state,
     :description, :name, :requested_by, :owned_by, :created_at, :accepted_at,
-    :labels, :project_id
+    :labels, :project_id, :comments
 
   attr_reader :id, :url
 
@@ -37,6 +37,7 @@ class Story
     @created_at    = @story.at('created_at').inner_html    unless @story.at('created_at').nil?
     @accepted_at   = @story.at('accepted_at').inner_html   unless @story.at('accepted_at').nil?
     @labels        = @story.at('labels').inner_html        unless @story.at('labels').nil?
+    @comments      ||= build_comments(@story.at('notes').inner_html)         unless @story.at('notes').nil?
   end
 
   # TODO: Test this method
@@ -74,6 +75,10 @@ class Story
   end
 
   protected
+
+  def build_comments(xml_comments)
+    (Hpricot(xml_comments)/:note).map {|comment| Comment.new(:comment => comment.to_s, :project_id => @project_id, :token => @token, :story_id => @id)}
+  end
 
   def to_param
     query_string = attributes.map { |key, value| "story[#{key}]=#{CGI::escape(value)}" unless value.nil?}.compact.join('&')

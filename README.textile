@@ -6,8 +6,8 @@ level using Ruby.
 h2. Installation
 
 <pre><code>
-  $ gem sources -a http://gems.github.com (you only have to do this once)
-  $ sudo gem install jfgomez86-track-r
+  $ gem sources -a http://gemcutter.org (you only have to do this once) *New*
+  $ sudo gem install track-r
 </code></pre>
 
 h2. Usage
