@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{track-r}
-  s.version = "1.6.1"
+  s.version = "1.7.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Jose Felix Gomez"]
@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
      "config/environment.rb",
      "config/gems.yml",
      "lib/track-r.rb",
+     "lib/track-r/comment.rb",
      "lib/track-r/project.rb",
      "lib/track-r/story.rb",
      "lib/track-r/token.rb",
