@@ -2,7 +2,7 @@
 class Story
   attr_accessor :story_type, :estimate, :current_state,
     :description, :name, :requested_by, :owned_by, :created_at, :accepted_at,
-    :labels, :project_id, :comments
+    :labels, :project_id, :comments, :story
 
   attr_reader :id, :url
 
@@ -12,7 +12,7 @@ class Story
       @id         = options[:story_id]
       @project_id = options[:project_id]
       @url        = "http://www.pivotaltracker.com/story/show/#{@id}"
-      @api_url    = "http://www.pivotaltracker.com/services/v2/projects/#{@project_id}/stories/#{@id}"
+      @api_url    = "#{CONFIG[:api_url]}projects/#{@project_id}/stories/#{@id}"
       @story      = Hpricot(open(@api_url, {"X-TrackerToken" => @token}))
     elsif options.include?(:story) && options.include?(:project_id) && options.include?(:token)
       @project_id = options[:project_id]
@@ -24,9 +24,9 @@ class Story
   end
 
   def build_story
-    @id            ||= @story.at('id').inner_html
+    @id            ||= @story.at('id').inner_html if @story.at('id')
     @url           ||= "http://www.pivotaltracker.com/story/show/#{@id}"
-    @api_url       ||= "http://www.pivotaltracker.com/services/v2/projects/#{@project_id}/stories/#{@id}"
+    @api_url       ||= "#{CONFIG[:api_url]}projects/#{@project_id}/stories/#{@id}"
     @story_type    = @story.at('story_type').inner_html    unless @story.at('story_type').nil?
     @estimate      = @story.at('estimate').inner_html      unless @story.at('estimate').nil?
     @current_state = @story.at('current_state').inner_html unless @story.at('current_state').nil?
@@ -57,7 +57,7 @@ class Story
 
   def save
     parameters = build_story_xml
-    api_url = URI.parse("http://www.pivotaltracker.com/services/v2/projects/#{@project_id}/stories/#{@id}")
+    api_url = URI.parse("#{CONFIG[:api_url]}projects/#{@project_id}/stories/#{@id}")
     response = Net::HTTP.start(api_url.host, api_url.port) do |http|
       http.put(api_url.path, parameters, {'X-TrackerToken' => @token, 'Content-Type' => 'application/xml'})
     end
@@ -68,7 +68,7 @@ class Story
 
   # TODO: test this method:
   def destroy
-    api_url = URI.parse("http://www.pivotaltracker.com/services/v2/projects/#{@project_id}/stories/#{@id}")
+    api_url = URI.parse("#{CONFIG[:api_url]}projects/#{@project_id}/stories/#{@id}")
     response = Net::HTTP.start(api_url.host, api_url.port) do |http|
       http.delete(api_url.path, {"X-TrackerToken" => @token})
     end

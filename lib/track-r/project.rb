@@ -9,7 +9,7 @@ class Project
     if options.include?(:project_id) && options.include?(:token)
       @id      = options[:project_id]
       @token   = options[:token].to_s
-      @api_url = "http://www.pivotaltracker.com/services/v2/projects/#{@id}"
+      @api_url = "#{CONFIG[:api_url]}projects/#{@id}"
       @url     = "http://www.pivotaltracker.com/projects/#{@id}"
       @project = Hpricot(open(@api_url, {"X-TrackerToken" => @token}))
       @stories = nil
@@ -34,7 +34,7 @@ class Project
   # Returns a Story object
   # TODO: Validate attributes
   def create_story(attributes = {})
-    api_url = URI.parse("http://www.pivotaltracker.com/services/v2/projects/#{@id}/stories")
+    api_url = URI.parse("#{CONFIG[:api_url]}projects/#{@id}/stories")
     query_string = attributes.map { |key, value| "story[#{key}]=#{CGI::escape(value)}"}.join('&')
     response = Net::HTTP.start(api_url.host, api_url.port) do |http|
       http.post(api_url.path, query_string.concat("&token=#{@token}"))
@@ -47,9 +47,9 @@ class Project
   # Deletes a story given a Story object or a story_id
   def delete_story(story)
     if story.is_a?(Story)
-      api_url = URI.parse("http://www.pivotaltracker.com/services/v2/projects/#{@id}/stories/#{story.id}")
+      api_url = URI.parse("#{CONFIG[:api_url]}projects/#{@id}/stories/#{story.id}")
     elsif story.is_a?(Integer) || story.to_i.is_a?(Integer)
-      api_url = URI.parse("http://www.pivotaltracker.com/services/v2/projects/#{@id}/stories/#{story}")
+      api_url = URI.parse("#{CONFIG[:api_url]}projects/#{@id}/stories/#{story}")
     else
       raise ArgumentError, "Should receive a story id or a Story object."
     end
@@ -86,7 +86,7 @@ class Project
   # @project
   def build_project
     @id               ||= @project.at('id').inner_html
-    @api_url          ||= "http://www.pivotaltracker.com/services/v2/projects/#{@id}"
+    @api_url          ||= "#{CONFIG[:api_url]}projects/#{@id}"
     @url              ||= "http://www.pivotaltracker.com/projects/#{@id}"
     @name             = @project.at('name').inner_html
     @iteration_length = @project.at('iteration_length').inner_html
@@ -96,7 +96,7 @@ class Project
 
   # Builds an array containing the project's stories
   def get_stories
-    api_url = "#{CONFIG[:api_location]}/projects/#{@id}/stories"
+    api_url = "#{CONFIG[:api_url]}projects/#{@id}/stories"
     @stories = (Hpricot(open(api_url, {"X-TrackerToken" => @token.to_s}))/:story).map {|story| Story.new(:story => story, :project_id => @id, :token => @token)}
   end
 
@@ -104,9 +104,9 @@ class Project
   def get_stories_by_iteration(name)
     case name
     when "icebox"
-      api_url = "http://www.pivotaltracker.com/services/v2/projects/#{@id}/stories?filter=current_state%3Aunscheduled"
+      api_url = "#{CONFIG[:api_url]}projects/#{@id}/stories?filter=current_state%3Aunscheduled"
     else
-      api_url = "http://www.pivotaltracker.com/services/v2/projects/#{@id}/iterations/#{name}"
+      api_url = "#{CONFIG[:api_url]}projects/#{@id}/iterations/#{name}"
     end
     @stories = (Hpricot(open(api_url, {"X-TrackerToken" => @token.to_s}))/:story).map {|story| Story.new(:story => story, :project_id => @id, :token => @token)}
   end
