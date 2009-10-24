@@ -24,7 +24,7 @@ class TestStoryTest < Test::Unit::TestCase
       @story.description = "ZOMG!"
       @story.save
 
-      assert_equal "Combo Koombea ma&#241;aneo???", @project.story(@story.id).name
+      assert_equal "More power to the shields", @project.story(@story.id).name
     end
 
   end

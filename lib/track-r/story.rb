@@ -58,8 +58,16 @@ class Story
   def save
     parameters = build_story_xml
     api_url = URI.parse("#{CONFIG[:api_url]}projects/#{@project_id}/stories/#{@id}")
-    response = Net::HTTP.start(api_url.host, api_url.port) do |http|
-      http.put(api_url.path, parameters, {'X-TrackerToken' => @token, 'Content-Type' => 'application/xml'})
+    begin
+      http = Net::HTTP.new(api_url.host, api_url.port)
+      http.use_ssl = true
+      response, data = http.put(api_url.path, parameters, {'X-TrackerToken' => @token, 'Content-Type' => 'application/xml'})
+
+      raise ResponseError, "Wrong response code" unless response.code.to_i == 200
+    rescue ResponseError => e
+      print "Got response code [#{response.code}]:\t"
+      puts response.message
+      raise
     end
 
     @story = (Hpricot(response.body)/:story)
@@ -69,8 +77,15 @@ class Story
   # TODO: test this method:
   def destroy
     api_url = URI.parse("#{CONFIG[:api_url]}projects/#{@project_id}/stories/#{@id}")
-    response = Net::HTTP.start(api_url.host, api_url.port) do |http|
-      http.delete(api_url.path, {"X-TrackerToken" => @token})
+    begin
+      http = Net::HTTP.new(api_url.host, api_url.port)
+      http.use_ssl = true
+      response, data = http.delete(api_url.path, {"X-TrackerToken" => @token})
+      raise ResponseError, "Wrong response code" unless response.code.to_i == 200
+    rescue ResponseError => e
+      print "Got response code [#{response.code}]:\t"
+      puts response.message
+      raise
     end
   end
 

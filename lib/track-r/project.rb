@@ -36,12 +36,19 @@ class Project
   def create_story(attributes = {})
     api_url = URI.parse("#{CONFIG[:api_url]}projects/#{@id}/stories")
     query_string = attributes.map { |key, value| "story[#{key}]=#{CGI::escape(value)}"}.join('&')
-    response = Net::HTTP.start(api_url.host, api_url.port) do |http|
-      http.post(api_url.path, query_string.concat("&token=#{@token}"))
-    end
+    begin
+      http = Net::HTTP.new(api_url.host, api_url.port)
+      http.use_ssl = true
+      response, data = http.post(api_url.path, query_string.concat("&token=#{@token}"))
 
-    story = (Hpricot(response.body)/:story)
-    Story.new(:story => story, :project_id => @id, :token => @token)
+      raise ResponseError, "Wrong response code" unless response.code.to_i == 200
+      story = (Hpricot(response.body)/:story)
+      Story.new(:story => story, :project_id => @id, :token => @token)
+    rescue ResponseError => e
+      print "Got response code [#{response.code}]:\t"
+      puts response.message
+      raise
+    end
   end
 
   # Deletes a story given a Story object or a story_id
@@ -53,11 +60,18 @@ class Project
     else
       raise ArgumentError, "Should receive a story id or a Story object."
     end
-    response = Net::HTTP.start(api_url.host, api_url.port) do |http|
-      http.delete(api_url.path, {"X-TrackerToken" => @token})
+    begin
+      http = Net::HTTP.new(api_url.host, api_url.port)
+      http.use_ssl = true
+      response, data = http.delete(api_url.path, {"X-TrackerToken" => @token})
+      raise ResponseError, "Wrong response code" unless response.code.to_i == 200
+      story = (Hpricot(response.body)/:story)
+      Story.new(:story => story, :project_id => @id, :token => @token)
+    rescue ResponseError => e
+      print "Got response code [#{response.code}]:\t"
+      puts response.message
+      raise
     end
-    story = (Hpricot(response.body)/:story)
-    Story.new(:story => story, :project_id => @id, :token => @token)
   end
 
   # Gets the backlog's stories
@@ -112,3 +126,5 @@ class Project
   end
 
 end # class Tracker::Project
+
+class ResponseError < Exception ;end
