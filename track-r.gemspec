@@ -48,6 +48,7 @@ Gem::Specification.new do |s|
      "test/unit/project_test.rb",
      "test/unit/token_test.rb"
   ]
+  s.add_dependency('hpricot', '>=0.6')
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
