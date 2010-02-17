@@ -14,14 +14,14 @@ class ProjectTest < Test::Unit::TestCase
       assert_equal $config[:project_1][:story_count], @project.stories.size
     end
 
-    should "show a story with @project.story and passing the story id as argument" do 
+    should "show a story with @project.story and passing the story id as argument" do
       assert_equal $config[:story_1][:name], @project.story($config[:story_1][:id]).name
     end
 
-    should "be able to add and remove a story" do 
+    should "be able to add and remove a story" do
       story_count = @project.stories.size
       attributes = { :name => "Finish Track-R (sorry for cluttering :))",
-                    :requested_by => "Jose Felix Gomez", 
+                    :requested_by => "Jose Felix Gomez",
                     :description => "This story was made with Track-R library. Sorry for the clutter, you're free to delete me." }
       new_story = @project.create_story(attributes)
       assert_equal  "Finish Track-R (sorry for cluttering :))", new_story.name
@@ -29,12 +29,12 @@ class ProjectTest < Test::Unit::TestCase
       assert_equal story_count, @project.stories.size
     end
 
-    should "be able to get the backlog stories" do 
+    should "be able to get the backlog stories" do
       story_count = $config[:project_1][:backlog_stories]
       assert_equal story_count, @project.backlog.size
     end
 
-    should "be able to get the current iteration stories" do 
+    should "be able to get the current iteration stories" do
       story_count = $config[:project_1][:current_stories]
       assert_equal story_count, @project.current.size
     end

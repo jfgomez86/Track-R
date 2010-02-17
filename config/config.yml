@@ -1,2 +1,2 @@
---- 
-:api_location: http://www.pivotaltracker.com/services/v2
+---
+:api_url: "https://www.pivotaltracker.com/services/v2/"
