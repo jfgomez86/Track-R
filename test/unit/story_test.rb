@@ -6,7 +6,7 @@ class TestStoryTest < Test::Unit::TestCase
 
     setup do
       token_options = {:username => $config[:username], :password => $config[:password]}
-      @tracker = Tracker.new(Token.new(token_options))
+      @tracker = Tracker::Tracker.new(Tracker::Token.new(token_options))
       @project_id = $config[:project_1][:id]
       @project = @tracker.project(@project_id)
       attributes = { :name => "Finish Track-R (sorry for cluttering :))",

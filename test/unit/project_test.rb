@@ -1,12 +1,12 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class ProjectTest < Test::Unit::TestCase
+class TrackR::ProjectTest < Test::Unit::TestCase
   context "A given project" do
 
     setup do
       @project_id = $config[:project_1][:id]
       token_options = {:username => $config[:username], :password => $config[:password]}
-      @tracker = Tracker.new(Token.new(token_options))
+      @tracker = TrackR::TrackR::Tracker.new(TrackR::TrackR::Token.new(token_options))
       @project = @tracker.project(@project_id)
     end
 
